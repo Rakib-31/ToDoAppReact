@@ -1,26 +1,72 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react';
+import Book from './component/Book';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export class App extends Component {
+
+  state = {
+    name: '',
+    isEditable: false,
+    books: []
+  }
+
+  inputHandler = event => {
+    this.setState({
+      name: event.target.value
+    })
+  }
+
+  addBook = event => {
+    var length = this.state.books.length;
+    if(event.key === 'Enter') {
+      var newStateArray = this.state.books;
+      newStateArray.push({id: length+1, bookname: this.state.name});
+      this.setState({
+        books: newStateArray,
+        name: ""
+      });
+      console.log(length);
+      
+    }
+  }
+
+  deleteHandler = id => {
+
+    var newBooks = this.state.books.filter(book => id !== book.id);
+    this.setState({
+      books: newBooks
+    })
+  } 
+
+  
+
+  updateHandler = (newname, id) => {
+    let newBooks = this.state.books.map(book => {
+      if (book.id === id) {
+         return {
+           ...book,
+           bookname: newname
+         }
+      }
+      return book;
+    });
+    this.setState({
+      books: newBooks
+    });
+  }
+
+  render() {
+    return (
+      <Book 
+        inputHandler={this.inputHandler} 
+        name={this.state.name}
+        addBook={this.addBook}
+        books={this.state.books}
+        deleteHandler={this.deleteHandler}
+        isEditable={this.state.isEditable}
+        updateHandler={this.updateHandler}
+      />
+    );
+  }
 }
 
 export default App;
